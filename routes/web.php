@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\MatakuliahController;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,5 +40,7 @@ Route::get('/matakuliah', function () {
     return view('halaman-index-matakuliah');
 });
 
+Route::get('/home',[HomeController::class,'index']);
 
+Route::get('/pegawai',[PegawaiController::class,'index']);
 
