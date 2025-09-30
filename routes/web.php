@@ -47,3 +47,6 @@ Route::get('/pegawai',[PegawaiController::class,'index']);
 
 Route::post('question/store', [QuestionController::class, 'store'])
 		->name('question.store');
+
+Route::post('question/respon', [QuestionController::class, 'store'])
+		->name('question.store');
