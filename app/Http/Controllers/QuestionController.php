@@ -42,7 +42,13 @@ class QuestionController extends Controller
         $data['email'] = $request->email;
         $data['pertanyaan'] = $request->pertanyaan;
 
-    return view('home-question-respon', $data);
+// Redirect ke route yang memiliki alias 'home'
+	//return redirect()->route('home');
+	//return redirect()->back();
+    return redirect()->route('home')
+        ->with('info', 'Terimakasih atas pertanyaan anda!' . $data['nama'] .'!');
+
+	//Redirect ke halaman sebelumnya
 
     }
 

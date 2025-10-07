@@ -41,7 +41,7 @@ Route::get('/matakuliah', function () {
     return view('halaman-index-matakuliah');
 });
 
-Route::get('/home',[HomeController::class,'index']);
+Route::get('/home',[HomeController::class,'index']) ->name('home');
 
 Route::get('/pegawai',[PegawaiController::class,'index']);
 
