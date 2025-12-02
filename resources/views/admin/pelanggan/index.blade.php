@@ -1,7 +1,6 @@
 @extends('layouts.admin.app')
 
 @section('content')
-
     {{-- Start Main Content --}}
     <div class="py-4">
         <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
@@ -25,12 +24,81 @@
                 <p class="mb-0">List data seluruh pelanggan</p>
             </div>
             <div>
-                <a href="{{ route('pelanggan.create') }}" class="btn btn-success text-white"><i
-                        class="far fa-question-circle me-1"></i> Tambah Pelanggan</a>
+                <a href="{{ route('admin.pelanggan.create') }}" class="btn btn-success text-white">
+                    <i class="fas fa-plus me-1"></i> Tambah Pelanggan
+                </a>
             </div>
         </div>
     </div>
 
+    {{-- Filter & Search Section --}}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('admin.pelanggan.index') }}">
+                        <div class="row">
+                            {{-- Search Input --}}
+                            <div class="col-md-3 mb-3">
+                                <label for="search" class="form-label">Cari Pelanggan</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="search"
+                                       name="search"
+                                       value="{{ request('search') }}"
+                                       placeholder="Nama, Email, atau Telepon...">
+                            </div>
+
+                            {{-- Gender Filter --}}
+                            <div class="col-md-2 mb-3">
+                                <label for="gender" class="form-label">Jenis Kelamin</label>
+                                <select class="form-select" id="gender" name="gender">
+                                    <option value="">Semua</option>
+                                    <option value="Male" {{ request('gender') == 'Male' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Female" {{ request('gender') == 'Female' ? 'selected' : '' }}>Perempuan</option>
+                                    <option value="Other" {{ request('gender') == 'Other' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
+                            </div>
+
+                            {{-- Date Range Filter --}}
+                            <div class="col-md-3 mb-3">
+                                <label for="start_date" class="form-label">Tanggal Lahir Dari</label>
+                                <input type="date"
+                                       class="form-control"
+                                       id="start_date"
+                                       name="start_date"
+                                       value="{{ request('start_date') }}">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="end_date" class="form-label">Sampai</label>
+                                <input type="date"
+                                       class="form-control"
+                                       id="end_date"
+                                       name="end_date"
+                                       value="{{ request('end_date') }}">
+                            </div>
+
+                            {{-- Action Buttons --}}
+                            <div class="col-md-1 mb-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+
+                            <div class="col-md-1 mb-3 d-flex align-items-end">
+                                <a href="{{ route('admin.pelanggan.index') }}" class="btn btn-secondary w-100">
+                                    <i class="fas fa-redo"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Data Table --}}
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card border-0 shadow mb-4">
@@ -39,6 +107,7 @@
                         <table id="table-pelanggan" class="table table-centered table-nowrap mb-0 rounded">
                             <thead class="thead-light">
                                 <tr>
+                                    <th class="border-0">ID</th>
                                     <th class="border-0">First Name</th>
                                     <th class="border-0">Last Name</th>
                                     <th class="border-0">Birthday</th>
@@ -49,52 +118,65 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dataPelanggan as $item)
+                                @forelse ($dataPelanggan as $item)
                                     <tr>
+                                        <td>{{ $item->pelanggan_id }}</td>
                                         <td>{{ $item->first_name }}</td>
                                         <td>{{ $item->last_name }}</td>
-                                        <td>{{ $item->birthday }}</td>
-                                        <td>{{ $item->gender }}</td>
+                                        <td>{{ $item->birthday ? \Carbon\Carbon::parse($item->birthday)->format('d-m-Y') : '-' }}</td>
+                                        <td>
+                                            @if($item->gender == 'Male')
+                                                <span class="badge bg-primary">Laki-laki</span>
+                                            @elseif($item->gender == 'Female')
+                                                <span class="badge bg-pink">Perempuan</span>
+                                            @else
+                                                <span class="badge bg-secondary">Lainnya</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $item->email }}</td>
-                                        <td>{{ $item->phone }}</td>
-                                        <td><a href="{{ route('pelanggan.edit', $item->pelanggan_id) }}"
-                                                class="btn btn-info btn-sm">
-                                                <svg class="icon icon-xs me-2" data-slot="icon" fill="none"
-                                                    stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10">
-                                                    </path>
-                                                </svg>
-                                                Edit
-                                                <div>
-
-                                                    <form //github.com/zennn187/Oza-Chicken.git
-                                                        action="{{ route('pelanggan.destroy', $item->pelanggan_id) }}"
-                                                        method="POST" style="display:inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm">
-                                                            <svg class="icon icon-xs me-2" data-slot="icon" fill="none"
-                                                                stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24"
-                                                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0">
-                                                                </path>
-                                                            </svg>
-                                                            Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                                </button>
+                                        <td>{{ $item->phone ?? '-' }}</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('admin.pelanggan.edit', $item->pelanggan_id) }}"
+                                                   class="btn btn-info btn-sm">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form action="{{ route('admin.pelanggan.destroy', $item->pelanggan_id) }}"
+                                                      method="POST"
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
                                                 </form>
-                                            </a></td>
-
+                                            </div>
+                                        </td>
                                     </tr>
-                                @endforeach
-
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                Tidak ada data pelanggan yang ditemukan.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
+
+                        {{-- Pagination --}}
+                        @if($dataPelanggan->hasPages())
+                            <div class="mt-3">
+                                {{ $dataPelanggan->withQueryString()->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
+
+                        {{-- Result Info --}}
+                        <div class="mt-2 text-muted">
+                            Menampilkan {{ $dataPelanggan->firstItem() ?? 0 }} - {{ $dataPelanggan->lastItem() ?? 0 }} dari {{ $dataPelanggan->total() }} data
+                        </div>
                     </div>
                 </div>
             </div>
@@ -102,3 +184,40 @@
     </div>
     {{-- End Main Content --}}
 @endsection
+
+@push('scripts')
+<script>
+    // Clear date inputs when reset button is clicked
+    document.addEventListener('DOMContentLoaded', function() {
+        const resetBtn = document.querySelector('a[href*="pelanggan.index"]');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', function() {
+                document.getElementById('search').value = '';
+                document.getElementById('gender').selectedIndex = 0;
+                document.getElementById('start_date').value = '';
+                document.getElementById('end_date').value = '';
+            });
+        }
+
+        // Validate date range
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+
+        if (startDate && endDate) {
+            startDate.addEventListener('change', function() {
+                if (endDate.value && startDate.value > endDate.value) {
+                    alert('Tanggal awal tidak boleh lebih besar dari tanggal akhir');
+                    startDate.value = '';
+                }
+            });
+
+            endDate.addEventListener('change', function() {
+                if (startDate.value && endDate.value < startDate.value) {
+                    alert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
+                    endDate.value = '';
+                }
+            });
+        }
+    });
+</script>
+@endpush
