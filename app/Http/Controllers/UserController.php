@@ -28,16 +28,24 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $data['name']     = $request->name;
-        $data['email']    = $request->email;
-        $data['password'] = Hash::make($request->password);
-//dd ($data);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
 
-        User::create($data);
+    $data = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => $request->role ?? 'user', // ← TAMBAHKAN INI
+    ];
 
-        return redirect()->route('admin.user.index')->with('create', 'Penambahan Data Berhasil!');
-    }
+    User::create($data);
+
+    return redirect()->route('user.index')->with('success', 'Penambahan Data Berhasil!');
+}
 
     /**
      * Display the specified resource.
@@ -52,22 +60,47 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // PERBAIKAN: Ambil user berdasarkan ID, bukan semua user
+        $user = User::findOrFail($id);
+        return view('admin.user.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        //
+{
+    $user = User::findOrFail($id);
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id,
+        'password' => 'nullable|min:6|confirmed',
+        'role' => 'required|string', // ← TAMBAHKAN VALIDASI
+    ]);
+
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->role = $request->role; // ← TAMBAHKAN INI
+
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->password);
     }
+
+    $user->save();
+
+    return redirect()->route('user.index')->with('success', 'Perubahan Data Berhasil!');
+}
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        // PERBAIKAN: Tambahkan method destroy
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('user.index')->with('success', 'Data berhasil dihapus');
     }
 }

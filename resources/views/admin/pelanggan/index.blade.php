@@ -24,7 +24,7 @@
                 <p class="mb-0">List data seluruh pelanggan</p>
             </div>
             <div>
-                <a href="{{ route('admin.pelanggan.create') }}" class="btn btn-success text-white">
+                <a href="{{ route('pelanggan.create') }}" class="btn btn-success text-white">
                     <i class="fas fa-plus me-1"></i> Tambah Pelanggan
                 </a>
             </div>
@@ -36,7 +36,7 @@
         <div class="col-12">
             <div class="card border-0 shadow">
                 <div class="card-body">
-                    <form method="GET" action="{{ route('admin.pelanggan.index') }}">
+                    <form method="GET" action="{{ route('pelanggan.index') }}">
                         <div class="row">
                             {{-- Search Input --}}
                             <div class="col-md-3 mb-3">
@@ -87,7 +87,7 @@
                             </div>
 
                             <div class="col-md-1 mb-3 d-flex align-items-end">
-                                <a href="{{ route('admin.pelanggan.index') }}" class="btn btn-secondary w-100">
+                                <a href="{{ route('pelanggan.index') }}" class="btn btn-secondary w-100">
                                     <i class="fas fa-redo"></i>
                                 </a>
                             </div>
@@ -137,11 +137,11 @@
                                         <td>{{ $item->phone ?? '-' }}</td>
                                         <td>
                                             <div class="d-flex gap-2">
-                                                <a href="{{ route('admin.pelanggan.edit', $item->pelanggan_id) }}"
+                                                <a href="{{ route('pelanggan.edit', $item->pelanggan_id) }}"
                                                    class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <form action="{{ route('admin.pelanggan.destroy', $item->pelanggan_id) }}"
+                                                <form action="{{ route('pelanggan.destroy', $item->pelanggan_id) }}"
                                                       method="POST"
                                                       onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                                     @csrf

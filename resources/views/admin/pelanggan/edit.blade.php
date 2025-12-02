@@ -11,7 +11,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.pelanggan.index') }}">Pelanggan</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('pelanggan.index') }}">Pelanggan</a></li>
             <li class="breadcrumb-item active" aria-current="page">Edit Pelanggan</li>
         </ol>
     </nav>
@@ -21,7 +21,7 @@
             <p class="mb-0">Form untuk mengedit data pelanggan.</p>
         </div>
         <div>
-            <a href="{{ route('admin.pelanggan.index') }}" class="btn btn-primary">
+            <a href="{{ route('pelanggan.index') }}" class="btn btn-primary">
                 <i class="fas fa-arrow-left me-1"></i> Kembali
             </a>
         </div>
@@ -32,7 +32,7 @@
     <div class="col-12 mb-4">
         <div class="card border-0 shadow components-section">
             <div class="card-body">
-                <form action="{{ route('admin.pelanggan.update', $dataPelanggan->pelanggan_id) }}" method="POST">
+                <form action="{{ route('pelanggan.update', $dataPelanggan->pelanggan_id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="row mb-4">
@@ -105,7 +105,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-1"></i> Simpan Perubahan
                                 </button>
-                                <a href="{{ route('admin.pelanggan.index') }}" class="btn btn-outline-secondary ms-2">
+                                <a href="{{ route('pelanggan.index') }}" class="btn btn-outline-secondary ms-2">
                                     <i class="fas fa-times me-1"></i> Batal
                                 </a>
                             </div>
